@@ -7,7 +7,7 @@ var productIndex1 = 0;
 var productIndex2 = 1;
 var productIndex3 = 2;
 var allClickCount = 0;
-var amtTests = 15;
+var amtTests = 25;
 
 function Product(name, imageLink) {
     this.name = name;
