@@ -1,0 +1,17 @@
+body {
+    background-color: :aqua;
+}
+header {
+    background-color: blue;
+    color:gold;
+    text-shadow: 5px 5px 5px black;
+}
+h1 {
+    font-size: 15px;
+}
+#image-div {
+    margin:10 auto;
+    padding:10px;
+    border:5px solid black;
+    display: inline-block;
+}
