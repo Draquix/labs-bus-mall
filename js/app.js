@@ -7,7 +7,7 @@ var productIndex1 = 0;
 var productIndex2 = 1;
 var productIndex3 = 2;
 var allClickCount = 0;
-var amtTests = 25;
+var amtTests = 5;
 
 function Product(name, imageLink) {
     this.name = name;
@@ -15,6 +15,14 @@ function Product(name, imageLink) {
     this.clickCount = 0;
     this.displayCount = 0;
     productContainer.push(this);
+}
+
+function getProductArray(nameOfProperty) {
+    var answer = [];
+    for (var i = 0; i < productContainer.length; i++) {
+        var answer[i] = productContainer[i][nameOfProperty];
+    }
+    return answer;
 }
 
 new Product('Banana Slicer','img/banana.jpg');
@@ -47,11 +55,11 @@ function onClickHandler(event) {
     allClickCount++;
     console.log(allClickCount);
     //if one of the elements is clicked, the counter variable will be incremented based on the id
-    if(event.srcElement.id === 'first') {
+    if(event.srcElement.id === '1') {
         productContainer[productIndex1].clickCount++;
-    } else if (event.srcElement.id === 'second') {
+    } else if (event.srcElement.id === '2') {
         productContainer[productIndex2].clickCount++;
-    } else if (event.srcElement.id === 'third') {
+    } else if (event.srcElement.id === '3') {
         productContainer[productIndex3].clickCount++;
     }
     //after recording the result, the deck should be shuffled so to speak, but it will keep running the RNG until it picks something new
@@ -84,7 +92,14 @@ function onClickHandler(event) {
         for (var i = 0; i < imgElements.length; i++) {
             imgElements[i].removeEventListener('click', onClickHandler);
         }
-        displayResults();
+        var resultButton = document.createElement('button');
+        resultButton.innerHTML = "Click for Results";
+        //below line targets a div on the html page that exists as a placeholder
+        var resultPanel = document.getElementById('button-spot');
+        resultPanel.appendChild(resultButton);
+        resultButton.addEventListener('click', displayResults);
+        //display results is the function that creates the list items and appends to a ul
+
     }
 }
  
@@ -92,9 +107,18 @@ function displayResults() {
     var resultList = document.getElementById('result-list');
     for (var i = 0; i < productContainer.length; i++) {
         var newListItem = document.createElement('li');
-        newListItem.textContent = productContainer[i].name + " had " + productContainer[i].clickCount + ' votes and was shown ' + productContainer[i].displayCount + " times.";
+        newListItem.textContent = `${productContainer[i].name} was clicked on ${productContainer[i].clickCount} times, and was shown ${productContainer[i].displayCount} times.`;
         resultList.appendChild(newListItem);
+        var percentageListItem = document.createElement('li');
+        if(productContainer[i].displayCount === 0) {
+            var math = `ZERO clicks and shown ${productContainer[i].displayCount} times.`;
+        } else {
+            math = Math.round( (productContainer[i]['clickCount'] / productContainer[i]['displayCount']).toFixed(2) * 100) + '%';      
+        }
+        percentageListItem.textContent = `${productContainer[i].name} percentage of clicks was` + math;
+        resultList.appendChild(percentageListItem);
     }
+    runMyChart();
 }
 
 //make the event listeners active
@@ -102,4 +126,42 @@ imgElements[0].addEventListener('click', onClickHandler);
 imgElements[1].addEventListener('click', onClickHandler);
 imgElements[2].addEventListener('click', onClickHandler);
 
-displayResults()
+function runMyChart () {
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: getProductArray('name'),
+            datasets: [{
+                label: '# of Votes',
+                data: getProductArray('clickCount'),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
