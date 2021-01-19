@@ -1,17 +1,39 @@
 body {
     background-color: :aqua;
 }
-header {
+header, footer {
+    text-align: center;
     background-color: blue;
     color:gold;
     text-shadow: 5px 5px 5px black;
+    border: solid 5px darkblue;
 }
+
 h1 {
-    font-size: 15px;
+    font-size: 30px;
+}
+h5 {
+    font-size: 18px;
+    font-weight: bold;
+}
+#product-panel {
+    align-content: center;
+
 }
 #image-div {
+    width:80%;
+    margin-right:10%;
+    margin-left:10%;
+    margin-top:20px;
+    margin-bottom:20px;
+    background-color: lightseagreen ;
+    justify-content: center;
     margin:10 auto;
     padding:10px;
     border:5px solid black;
     display: inline-block;
+}
+.product {
+    margin:20px;
+    border:5px solid red;
 }
