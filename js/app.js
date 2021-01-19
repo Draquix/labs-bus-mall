@@ -45,6 +45,7 @@ productContainer[productIndex3].displayCount++;
 function onClickHandler(event) {
     console.log('onclick registered');
     allClickCount++;
+    console.log(allClickCount);
     //if one of the elements is clicked, the counter variable will be incremented based on the id
     if(event.srcElement.id === 'first') {
         productContainer[productIndex1].clickCount++;
@@ -78,9 +79,21 @@ function onClickHandler(event) {
     productContainer[productIndex1].displayCount++;
     productContainer[productIndex2].displayCount++;
     productContainer[productIndex3].displayCount++;
-    //if we finished the whole test session run a function that displays the results
+    //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
     if (allClickCount === amtTests) {
+        for (var i = 0; i < imgElements.length; i++) {
+            imgElements[i].removeEventListener('click', onClickHandler);
+        }
         displayResults();
+    }
+}
+ 
+function displayResults() {
+    var resultList = document.getElementById('result-list');
+    for (var i = 0; i < productContainer.length; i++) {
+        var newListItem = document.createElement('li');
+        newListItem.textContent = productContainer[i].name + " had " + productContainer[i].clickCount + ' votes and was shown ' + productContainer[i].displayCount + " times.";
+        resultList.appendChild(newListItem);
     }
 }
 
