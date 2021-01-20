@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 console.log('js script connected');
 
 var imgElements = document.getElementsByTagName('img');
@@ -6,7 +6,10 @@ var productContainer = [];
 var productIndex1 = 0;
 var productIndex2 = 1;
 var productIndex3 = 2;
+//page loads and sets the all click counter to zero no matter what
 var allClickCount = 0;
+//but then it adjusts the variable to load the totalClicks item from memory.  if clicks have been registered before a refresh they stay.
+var allClickCount = localStorage.getItem('totalClicks');
 var amtTests = 25;
 
 function Product(name, imageLink, clickCount) {
@@ -33,13 +36,13 @@ function makePercentageArray() {
     for (var i = 0; i < productContainer.length; i++) {
         answer[i] = ((productContainer[i].clickCount / productContainer[i].displayCount) * 100).toFixed(2);
     }
-    return answer
+    return answer;
 }
-function ObjectLoader(){
+function ObjectLoader() {
     var savedProduct = localStorage.getItem('savedProduct');
     if (savedProduct) {
         console.log('loading saved array of objects');
-        var arrayOfNotObjects = JSON.parse(savedProducts);
+        var arrayOfNotObjects = JSON.parse(savedProduct);
         for (var i = 0; i < arrayOfNotObjects.length; i++) {
             new Product(arrayOfNotObjects[i].name,
                 arrayOfNotObjects[i].imageLink,
@@ -71,29 +74,17 @@ function ObjectLoader(){
         productContainer[productIndex3].displayCount++;
     }
 }
-
+//ObjectLoader function runs when the script reaches this point. This means that it will run
+//AFTER a page refresh as the script will run again and reach this point. In the function's logic, if
+//anything exists in localStorage regarding that JSONified Object string, instead of creating all new objects when
+//the page loads, it will load the objects from local storage. 
 ObjectLoader();
-// var savedProduct = localStorage.getItem('savedProduct');
-//     if (savedProduct) {
-//         var changeHeader = document.getElementById('title-head');
-//         changeHeader.innerHTML = "You've already begun your testing!";
-//     }
+
 console.log('objects loaded');
 function onClickHandler(event) {
     console.log('onclick registered'); 
-    if (localStorage.getItem('savedProduct') === !null) {
-        var changeHeader = document.getElementById('title-head');
-        changeHeader.innerHTML = "You've already begun your testing!";
-    }
-    // if (localStorage.getItem(savedProducts) === !null) {
-    //     console.log('localStorage has something.');
-    //     //ObjectLoader();
-    // }
-    // var savedProduct = localStorage.getItem('savedProduct');
-    // if (savedProduct) {
-    //     console.log('loading saved array of objects');
-    // }
     allClickCount++;
+    localStorage.setItem('totalClicks', allClickCount);
     console.log(allClickCount);
     //if one of the elements is clicked, the counter variable will be incremented based on the id
     if(event.srcElement.id === '1') {
@@ -129,10 +120,12 @@ function onClickHandler(event) {
     productContainer[productIndex1].displayCount++;
     productContainer[productIndex2].displayCount++;
     productContainer[productIndex3].displayCount++;
+    //save the object group after EVERY click -->
+    localStorage.setItem('savedProduct', JSON.stringify(productContainer));
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
     if (allClickCount === amtTests) {
 
-        localStorage.setItem('savedProduct', JSON.stringify(productContainer));
+        
 
         for (var i = 0; i < imgElements.length; i++) {
             imgElements[i].removeEventListener('click', onClickHandler);
