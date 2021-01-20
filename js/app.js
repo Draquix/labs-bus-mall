@@ -7,19 +7,23 @@ var productIndex1 = 0;
 var productIndex2 = 1;
 var productIndex3 = 2;
 var allClickCount = 0;
-var amtTests = 5;
+var amtTests = 25;
 
 function Product(name, imageLink, clickCount) {
     this.name = name;
     this.imageLink = imageLink;
     this.clickCount = 0;
     this.displayCount = 0;
-    if(clickCount) {
-        this.clickCount = clickCount;
-    } else {
-        this.clickCount = 0;
+
     }
     productContainer.push(this);
+}
+function makePercentageArray() {
+    var answer = [];
+    for (var i = 0; i < productContainer.length; i++) {
+        answer[i] = ((productContainer[i].clickCount / productContainer[i].displayCount) * 100).toFixed(2);
+    }
+    return answer
 }
 
 //below grabs a second statistic for the second chart
@@ -80,16 +84,17 @@ function onClickHandler(event) {
         productContainer[productIndex3].clickCount++;
     }
     //after recording the result, the deck should be shuffled so to speak, but it will keep running the RNG until it picks something new
+    //we also must make sure there are no duplicates, so shuffle 2 and three will have another condition to make sure they do not match shuffle1 or each other
     var shuffle1 = Math.floor(Math.random() * productContainer.length);
     while(shuffle1 === productIndex1 || shuffle1 === productIndex2 || shuffle1 === productIndex3) {
         shuffle1 = Math.floor(Math.random() * productContainer.length);
     }
     var shuffle2 = Math.floor(Math.random() * productContainer.length);
-    while(shuffle2 === productIndex1 || shuffle2 === productIndex2 || shuffle2 === productIndex3) {
+    while(shuffle2 === productIndex1 || shuffle2 === productIndex2 || shuffle2 === productIndex3 || shuffle2 === shuffle1) {
         shuffle2 = Math.floor(Math.random() * productContainer.length);
     }
     var shuffle3 = Math.floor(Math.random() * productContainer.length);
-    while(shuffle3 === productIndex1 || shuffle3 === productIndex2 || shuffle3 === productIndex3) {
+    while(shuffle3 === productIndex1 || shuffle3 === productIndex2 || shuffle3 === productIndex3 || shuffle3 == shuffle1 || shuffle3 == shuffle2) {
         shuffle3 = Math.floor(Math.random() * productContainer.length);
     }
     //now with three brand new index numbers the products can be updated
@@ -137,9 +142,16 @@ function displayResults() {
             math = Math.round( (productContainer[i]['clickCount'] / productContainer[i]['displayCount']).toFixed(2) * 100) + '%';      
         }
         percentageListItem.textContent = `${productContainer[i].name} percentage of clicks was` + math;
+        productContainer[i].percentage = math;
+        console.log(productContainer[i].name + '% is ' + productContainer[i].percentage)
         resultList.appendChild(percentageListItem);
     }
-    runMyChart();
+    var message1 = document.getElementById('msg1');
+    message1.innerHTML = 'Total Clicks Per Product';
+    var message2 = document.getElementById('msg2');
+    message2.innerHTML = 'Percentage Of Times CLicked Out Of Times Shown';
+    runMyTotalClickChart();
+    runMyPercentageChart();
 }
 
 //make the event listeners active
@@ -147,16 +159,28 @@ imgElements[0].addEventListener('click', onClickHandler);
 imgElements[1].addEventListener('click', onClickHandler);
 imgElements[2].addEventListener('click', onClickHandler);
 
-function runMyChart () {
-    var ctx = document.getElementById('myChart').getContext('2d');
+function runMyTotalClickChart () {
+    var ctx = document.getElementById('myChartTotalClicks').getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: getProductArray('name'),
             datasets: [{
-                label: '# of Votes',
+                label: 'Number of Clicks per Product',
                 data: getProductArray('clickCount'),
                 backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',
                     'rgba(255, 206, 86, 0.2)',
@@ -170,7 +194,82 @@ function runMyChart () {
                     'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
                     'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+function runMyPercentageChart () {
+    var ctx = document.getElementById('myChartPercentage').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: getProductArray('name'),
+            datasets: [{
+                label: 'Percentage of Clicks per Times Seen',
+                data: makePercentageArray(),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
                 ],
                 borderWidth: 1
             }]

@@ -8,8 +8,12 @@ header, footer {
     color:gold;
     text-shadow: 5px 5px 5px black;
     border: solid 5px darkblue;
+    margin:5px;
 }
-
+footer {
+    position:absolute;
+    width:100%;
+}
 h1 {
     font-size: 30px;
 }
@@ -21,31 +25,35 @@ h2 {
     text-shadow: 4px 4px 4px black;
 }
 h5 {
+    background-color: blue;
+    color:gold;
     font-size: 18px;
     font-weight: bold;
 }
 #product-panel {
     align-content: center;
-
 }
 #image-div {
     width:80%;
+    height: 510px;
     margin-right:10%;
     margin-left:10%;
     margin-top:20px;
     margin-bottom:20px;
     background-color: lightseagreen ;
-    justify-content: center;
+    text-align: center;
     margin:10 auto;
     padding:10px;
     border:5px solid black;
     display: inline-block;
 }
+#button-spot {
+    text-align: center;
+}
 button {
     font-size:30px ;
     border-radius: 10px;
     background-color: red;
-
 }
 .product {
     margin:20px;
@@ -58,4 +66,12 @@ button {
     margin-left:10%;
     margin-right:10%;
     text-align: center;
+    margin-bottom: 5px;
+}
+#result-list {
+    margin-bottom:10px;
+}
+canvas {
+    width:40%;
+    border:solid 5px darkblue;
 }
