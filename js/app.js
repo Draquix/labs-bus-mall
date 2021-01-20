@@ -12,7 +12,11 @@ var amtTests = 25;
 function Product(name, imageLink) {
     this.name = name;
     this.imageLink = imageLink;
-    this.clickCount = 0;
+    if (clickCount) {
+        this.clickCount = clickCount;
+    } else {
+        this.clickCount = 0;
+    }
     this.displayCount = 0;
     productContainer.push(this);
 }
@@ -32,30 +36,40 @@ function makePercentageArray() {
     return answer
 }
 
-new Product('Banana Slicer','img/banana.jpg');
-new Product('TP Tablet Holder', 'img/bathroom.jpg');
-new Product('Rain Boots', 'img/boots.jpg');
-new Product('Complete Breakfast', 'img/breakfast.jpg');
-new Product('Meatball Bubblegum', 'img/bubblegum.jpg');
-new Product('Uncomfortable Chair', 'img/chair.jpg');
-new Product('Cthulhu Figurine', 'img/cthulhu.jpg');
-new Product('Dragon Meat', 'img/dragon.jpg');
-new Product('Pen Tableware','img/pen.jpg');
-new Product('Pet Paw Sweeper', 'img/pet-sweep.jpg');
-new Product('Pizza Scissors', 'img/scissors.jpg');
-new Product('Shark Plush', 'img/shark.jpg');
-new Product('Baby Sweeper', 'img/sweep.png');
-new Product('Tauntaun Sleeper', 'img/tauntaun.jpg');
-new Product('USB Tentacle', 'img/usb.gif');
-new Product('Self Watering Watering Can', 'img/water-can.jpg');
-new Product('Dribble-sure Wine Glass', 'img/wine-glass.jpg');
+var savedProducts = localStorage.getItem('savedProduct');
+if (savedProducts) {
+    var arrayOfNotObjects = JSON.parse(savedProducts);
+    for (var i = 0; i < arrayOfNotObjects.length; i++) {
+        new Product(arrayOfNotObjects[i].name,
+            arrayOfNotObjects[i].imageLink,
+            arrayOfNotObjects[i].clickCount
+            );
+    }
+} else {
+    new Product('Banana Slicer','img/banana.jpg');
+    new Product('TP Tablet Holder', 'img/bathroom.jpg');
+    new Product('Rain Boots', 'img/boots.jpg');
+    new Product('Complete Breakfast', 'img/breakfast.jpg');
+    new Product('Meatball Bubblegum', 'img/bubblegum.jpg');
+    new Product('Uncomfortable Chair', 'img/chair.jpg');
+    new Product('Cthulhu Figurine', 'img/cthulhu.jpg');
+    new Product('Dragon Meat', 'img/dragon.jpg');
+    new Product('Pen Tableware','img/pen.jpg');
+    new Product('Pet Paw Sweeper', 'img/pet-sweep.jpg');
+    new Product('Pizza Scissors', 'img/scissors.jpg');
+    new Product('Shark Plush', 'img/shark.jpg');
+    new Product('Baby Sweeper', 'img/sweep.png');
+    new Product('Tauntaun Sleeper', 'img/tauntaun.jpg');
+    new Product('USB Tentacle', 'img/usb.gif');
+    new Product('Self Watering Watering Can', 'img/water-can.jpg');
+    new Product('Dribble-sure Wine Glass', 'img/wine-glass.jpg');
 
-//these three are automatically seen as the defaults during page load
-productContainer[productIndex1].displayCount++;
-productContainer[productIndex2].displayCount++;
-productContainer[productIndex3].displayCount++;
+    //these three are automatically seen as the defaults during page load
+    productContainer[productIndex1].displayCount++;
+    productContainer[productIndex2].displayCount++;
+    productContainer[productIndex3].displayCount++;
 
-
+}
 
 function onClickHandler(event) {
     console.log('onclick registered');
@@ -97,6 +111,9 @@ function onClickHandler(event) {
     productContainer[productIndex3].displayCount++;
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
     if (allClickCount === amtTests) {
+
+        localStorage.setItem('savedProduct', JSON.stringify(productContainer));
+
         for (var i = 0; i < imgElements.length; i++) {
             imgElements[i].removeEventListener('click', onClickHandler);
         }
