@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results of Bus Mall User Test</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1 id="title-head">Please pick your preferred product from the 3 below.</h1>
+        <nav>
+            <ul>
+                <a href="results.html">Results Page</a>
+                <a href="index.html">Home Page</a>
+            </ul>
+        </nav>
+    </header>
+<main>
+    <section id="list">
+        <h2> Results </h2>
+        <ul id="result-list">
+        </ul>
+    </section>
+    <section id="result-display">
+        <div id="charts">
+            <h5 id='msg1'></h5>
+            <canvas id="myChartTotalClicks"></canvas>
+            <h5 id='msg2'></h5>
+            <canvas id="myChartPercentage"></canvas>
+        </div>
+    </section>
+
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/chart.js"></script>
+    
+</body>
+</html>

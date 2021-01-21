@@ -24,32 +24,6 @@ function Product(name, imageLink, clickCount) {
     productContainer.push(this);
 }
 
-function makePercentageArray() {
-    var answer = [];
-    for (var i = 0; i < productContainer.length; i++) {
-        answer[i] = ((productContainer[i].clickCount / productContainer[i].displayCount) * 100).toFixed(2);
-    }
-    return answer;
-}
-function getProductArray(nameOfThePropertyIWant){
-    var answer = [];
-    for(var i = 0; i < productContainer.length; i++){
-      answer[i] = productContainer[i][nameOfThePropertyIWant];
-    }
-    return answer;
-}
-function makePercentageArray() {
-    var answer = [];
-    for (var i = 0; i < productContainer.length; i++) {
-        if (productContainer[i].displayCount > 0){
-            answer[i] = Math.round( (productContainer[i]['clickCount'] / productContainer[i]['displayCount']).toFixed(2) * 100);
-            console.log(answer[i]);
-        } else {
-            answer[i] = 0;
-        }
-    }
-    return answer;
-}
 
 function ObjectLoader() {
     var savedProduct = localStorage.getItem('savedProducts');
@@ -102,10 +76,13 @@ function onClickHandler(event) {
     //if one of the elements is clicked, the counter variable will be incremented based on the id
     if(event.srcElement.id === '1') {
         productContainer[productIndex1].clickCount++;
+        console.log('product 1 clicked, its clickCount is: ' + productContainer[productIndex1].clickCount);
     } else if (event.srcElement.id === '2') {
         productContainer[productIndex2].clickCount++;
+        console.log('product 2 clicked, its clickCount is: ' + productContainer[productIndex2].clickCount);
     } else if (event.srcElement.id === '3') {
         productContainer[productIndex3].clickCount++;
+        console.log('product 3 clicked, its clickCount is: ' + productContainer[productIndex3].clickCount);
     }
     //after recording the result, the deck should be shuffled so to speak, but it will keep running the RNG until it picks something new
     //we also must make sure there are no duplicates, so shuffle 2 and three will have another condition to make sure they do not match shuffle1 or each other
@@ -133,6 +110,7 @@ function onClickHandler(event) {
     productContainer[productIndex1].displayCount++;
     productContainer[productIndex2].displayCount++;
     productContainer[productIndex3].displayCount++;
+    console.log('should be incrementing displayCounts, vars are: '+productContainer[productIndex1].displayCount+' '+productContainer[productIndex2].displayCount+' '+productContainer[productIndex1].displayCount);
     //save the object group after EVERY click -->
     localStorage.setItem('savedProducts', JSON.stringify(productContainer));
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
@@ -143,172 +121,27 @@ function onClickHandler(event) {
             imgElements[i].removeEventListener('click', onClickHandler);
         }
         var resultButton = document.createElement('button');
-        resultButton.innerHTML = "Click for Results";
+        resultButton.innerHTML = "Click for Results On New Page";
+        //below causes the button to go to a new page
+        resultButton.onclick = function ()  {
+            location.href = "/results.html"
+        };
         //below line targets a div on the html page that exists as a placeholder
         var resultPanel = document.getElementById('button-spot');
         resultPanel.appendChild(resultButton);
-        resultButton.addEventListener('click', displayResults);
+        // resultButton.addEventListener('click', displayResults);
         //display results is the function that creates the list items and appends to a ul
 
     }
 }
  
-function displayResults() {
-    var resultList = document.getElementById('result-list');
-    for (var i = 0; i < productContainer.length; i++) {
-        var newListItem = document.createElement('li');
-        newListItem.textContent = `${productContainer[i].name} was clicked on ${productContainer[i].clickCount} times, and was shown ${productContainer[i].displayCount} times.`;
-        resultList.appendChild(newListItem);
-        var percentageListItem = document.createElement('li');
-        if(productContainer[i].displayCount === 0) {
-            var math = `ZERO clicks and shown ${productContainer[i].displayCount} times.`;
-        } else {
-            math = Math.round( (productContainer[i]['clickCount'] / productContainer[i]['displayCount']).toFixed(2) * 100) + '%';      
-        }
-        percentageListItem.textContent = `${productContainer[i].name} percentage of clicks was` + math;
-        productContainer[i].percentage = math;
-        console.log(productContainer[i].name + '% is ' + productContainer[i].percentage)
-        resultList.appendChild(percentageListItem);
-    }
-    var message1 = document.getElementById('msg1');
-    message1.innerHTML = 'Total Clicks Per Product';
-    var message2 = document.getElementById('msg2');
-    message2.innerHTML = 'Percentage Of Times CLicked Out Of Times Shown';
-    runMyTotalClickChart();
-    runMyPercentageChart();
-}
 
 //make the event listeners active
 imgElements[0].addEventListener('click', onClickHandler);
 imgElements[1].addEventListener('click', onClickHandler);
 imgElements[2].addEventListener('click', onClickHandler);
 
-function runMyTotalClickChart () {
-    var ctx = document.getElementById('myChartTotalClicks').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: getProductArray('name'),
-            datasets: [{
-                label: 'Number of Clicks per Product',
-                data: getProductArray('clickCount'),
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-}
-function runMyPercentageChart () {
-    var ctx = document.getElementById('myChartPercentage').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: getProductArray('name'),
-            datasets: [{
-                label: 'Percentage of Clicks per Times Seen',
-                data: makePercentageArray(),
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-}
+
 //working with the form
 
 var nameForm = document.getElementById('name-form');
