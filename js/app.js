@@ -21,15 +21,9 @@ function Product(name, imageLink, clickCount) {
         this.clickCount = 0;
     }
     this.displayCount = 0;
-    productContainer.push(this);
-}
 
-function getProductArray(nameOfProperty) {
-    var answer = [];
-    for (var i = 0; i < productContainer.length; i++) {
-        answer[i] = productContainer[i][nameOfProperty];
     }
-    return answer;
+    productContainer.push(this);
 }
 function makePercentageArray() {
     var answer = [];
@@ -67,6 +61,51 @@ function ObjectLoader() {
         new Product('USB Tentacle', 'img/usb.gif');
         new Product('Self Watering Watering Can', 'img/water-can.jpg');
         new Product('Dribble-sure Wine Glass', 'img/wine-glass.jpg');
+
+
+//below grabs a second statistic for the second chart
+// function getProductArray(nameOfProperty) {
+//     var answer = [];
+//     for (var i = 0 ; i < productContainer.length ; i++) {
+//         answer[i] = productContainer[i][nameOfProperty]; 
+//     }
+//     return answer;
+// }
+
+//lets see if we can grab the JSON string
+var savedProductString = localStorage.getItem('savedProducts');
+if(savedProductString) {
+    var arrayOfNotYetProductObjects = JSON.parse(savedProductString);
+    for (var i = 0; i < arrayOfNotYetProductObjects.length; i++) {
+        new Product(
+            arrayOfNotYetProductObjects[i].name,
+            arrayOfNotYetProductObjects[i].imageLink,
+            arrayOfNotYetProductObjects[i].clickCount
+        );
+    } // changes from JSON string into objects from local storage
+} else {
+    new Product('Banana Slicer','img/banana.jpg');
+    new Product('TP Tablet Holder', 'img/bathroom.jpg');
+    new Product('Rain Boots', 'img/boots.jpg');
+    new Product('Complete Breakfast', 'img/breakfast.jpg');
+    new Product('Meatball Bubblegum', 'img/bubblegum.jpg');
+    new Product('Uncomfortable Chair', 'img/chair.jpg');
+    new Product('Cthulhu Figurine', 'img/cthulhu.jpg');
+    new Product('Dragon Meat', 'img/dragon.jpg');
+    new Product('Pen Tableware','img/pen.jpg');
+    new Product('Pet Paw Sweeper', 'img/pet-sweep.jpg');
+    new Product('Pizza Scissors', 'img/scissors.jpg');
+    new Product('Shark Plush', 'img/shark.jpg');
+    new Product('Baby Sweeper', 'img/sweep.png');
+    new Product('Tauntaun Sleeper', 'img/tauntaun.jpg');
+    new Product('USB Tentacle', 'img/usb.gif');
+    new Product('Self Watering Watering Can', 'img/water-can.jpg');
+    new Product('Dribble-sure Wine Glass', 'img/wine-glass.jpg');
+    //these three are automatically seen as the defaults during page load
+    productContainer[productIndex1].displayCount++;
+    productContainer[productIndex2].displayCount++;
+    productContainer[productIndex3].displayCount++;
+} //runs the constructor function for all the products if not in local storage
 
         //these three are automatically seen as the defaults during page load
         productContainer[productIndex1].displayCount++;
@@ -124,8 +163,10 @@ function onClickHandler(event) {
     localStorage.setItem('savedProduct', JSON.stringify(productContainer));
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
     if (allClickCount === amtTests) {
+        //this grabs our Product objects that were constructed and pushed to an array and converts them into a string format
+        localStorage.setItem('savedProducts', JSON.stringify(productContainer) );
 
-        
+
 
         for (var i = 0; i < imgElements.length; i++) {
             imgElements[i].removeEventListener('click', onClickHandler);
@@ -297,18 +338,23 @@ function runMyPercentageChart () {
         }
     });
 }
+//working with the form
 
-//using the form to store data in localStorage for the userName
 var nameForm = document.getElementById('name-form');
+
 nameForm.addEventListener('submit', function(event){
     event.preventDefault();
-    var providedUserName = document.getElementById('name').value;
-    console.log('event handler for the form is active');
-    localStorage.setItem('userName', providedUserName);
-    nameForm.textContent = 'Welcome back, ' + providedUserName;
-});
+    console.log('name form is listening');
+    var userNameProvided = document.getElementById('name').nodeValue;
+    console.log('userNameProvided', userNameProvided);
+    //save it to local storage
+    localStorage.setItem('userName', userNameProvided);
+    //show it on the page
+    nameForm.textContent = 'Welcome to our site ' + userNameProvided;
 
+});
+//remove the form
 var savedName = localStorage.getItem('userName');
 if (savedName) {
-    nameForm.textContent = `Thankyou for your input, ${savedName}, your participation is key in collecting our data!`;
-}
+    nameForm.textContent = `Thanks for stopping by ${savedName}.  Your participation is key to our results!`;
+
