@@ -33,8 +33,20 @@ function makePercentageArray() {
 }
 function getProductArray(nameOfThePropertyIWant){
     var answer = [];
-    for(var i = 0; i < allPizzas.length; i++){
-      answer[i] = allPizzas[i][nameOfThePropertyIWant];
+    for(var i = 0; i < productContainer.length; i++){
+      answer[i] = productContainer[i][nameOfThePropertyIWant];
+    }
+    return answer;
+}
+function makePercentageArray() {
+    var answer = [];
+    for (var i = 0; i < productContainer.length; i++) {
+        if (productContainer[i].displayCount > 0){
+            answer[i] = Math.round( (productContainer[i]['clickCount'] / productContainer[i]['displayCount']).toFixed(2) * 100);
+            console.log(answer[i]);
+        } else {
+            answer[i] = 0;
+        }
     }
     return answer;
 }
@@ -124,7 +136,7 @@ function onClickHandler(event) {
     //save the object group after EVERY click -->
     localStorage.setItem('savedProducts', JSON.stringify(productContainer));
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
-    if (allClickCount === amtTests) {
+    if (allClickCount >= amtTests) {
         //this grabs our Product objects that were constructed and pushed to an array and converts them into a string format
         
         for (var i = 0; i < imgElements.length; i++) {

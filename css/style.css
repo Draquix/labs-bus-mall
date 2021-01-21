@@ -53,7 +53,7 @@ aside {
     width:57%;
     height: 510px;
     border:solid 5px black;
-    position:fixed;
+    position:absolute;
     margin-top:20px;
     margin-bottom:20px;
     text-align: center;
