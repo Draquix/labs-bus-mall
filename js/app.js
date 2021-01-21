@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 console.log('js script connected');
 
 var imgElements = document.getElementsByTagName('img');
@@ -6,13 +6,20 @@ var productContainer = [];
 var productIndex1 = 0;
 var productIndex2 = 1;
 var productIndex3 = 2;
+//page loads and sets the all click counter to zero no matter what
 var allClickCount = 0;
+//but then it adjusts the variable to load the totalClicks item from memory.  if clicks have been registered before a refresh they stay.
+var allClickCount = localStorage.getItem('totalClicks');
 var amtTests = 25;
 
 function Product(name, imageLink, clickCount) {
     this.name = name;
     this.imageLink = imageLink;
-    this.clickCount = 0;
+    if (clickCount) {
+        this.clickCount = clickCount;
+    } else {
+        this.clickCount = 0;
+    }
     this.displayCount = 0;
 
     }
@@ -23,8 +30,38 @@ function makePercentageArray() {
     for (var i = 0; i < productContainer.length; i++) {
         answer[i] = ((productContainer[i].clickCount / productContainer[i].displayCount) * 100).toFixed(2);
     }
-    return answer
+    return answer;
 }
+function ObjectLoader() {
+    var savedProduct = localStorage.getItem('savedProduct');
+    if (savedProduct) {
+        console.log('loading saved array of objects');
+        var arrayOfNotObjects = JSON.parse(savedProduct);
+        for (var i = 0; i < arrayOfNotObjects.length; i++) {
+            new Product(arrayOfNotObjects[i].name,
+                arrayOfNotObjects[i].imageLink,
+                arrayOfNotObjects[i].clickCount
+                );
+        }
+    } else {
+        new Product('Banana Slicer','img/banana.jpg');
+        new Product('TP Tablet Holder', 'img/bathroom.jpg');
+        new Product('Rain Boots', 'img/boots.jpg');
+        new Product('Complete Breakfast', 'img/breakfast.jpg');
+        new Product('Meatball Bubblegum', 'img/bubblegum.jpg');
+        new Product('Uncomfortable Chair', 'img/chair.jpg');
+        new Product('Cthulhu Figurine', 'img/cthulhu.jpg');
+        new Product('Dragon Meat', 'img/dragon.jpg');
+        new Product('Pen Tableware','img/pen.jpg');
+        new Product('Pet Paw Sweeper', 'img/pet-sweep.jpg');
+        new Product('Pizza Scissors', 'img/scissors.jpg');
+        new Product('Shark Plush', 'img/shark.jpg');
+        new Product('Baby Sweeper', 'img/sweep.png');
+        new Product('Tauntaun Sleeper', 'img/tauntaun.jpg');
+        new Product('USB Tentacle', 'img/usb.gif');
+        new Product('Self Watering Watering Can', 'img/water-can.jpg');
+        new Product('Dribble-sure Wine Glass', 'img/wine-glass.jpg');
+
 
 //below grabs a second statistic for the second chart
 // function getProductArray(nameOfProperty) {
@@ -70,10 +107,23 @@ if(savedProductString) {
     productContainer[productIndex3].displayCount++;
 } //runs the constructor function for all the products if not in local storage
 
+        //these three are automatically seen as the defaults during page load
+        productContainer[productIndex1].displayCount++;
+        productContainer[productIndex2].displayCount++;
+        productContainer[productIndex3].displayCount++;
+    }
+}
+//ObjectLoader function runs when the script reaches this point. This means that it will run
+//AFTER a page refresh as the script will run again and reach this point. In the function's logic, if
+//anything exists in localStorage regarding that JSONified Object string, instead of creating all new objects when
+//the page loads, it will load the objects from local storage. 
+ObjectLoader();
 
+console.log('objects loaded');
 function onClickHandler(event) {
-    console.log('onclick registered');
+    console.log('onclick registered'); 
     allClickCount++;
+    localStorage.setItem('totalClicks', allClickCount);
     console.log(allClickCount);
     //if one of the elements is clicked, the counter variable will be incremented based on the id
     if(event.srcElement.id === '1') {
@@ -109,10 +159,13 @@ function onClickHandler(event) {
     productContainer[productIndex1].displayCount++;
     productContainer[productIndex2].displayCount++;
     productContainer[productIndex3].displayCount++;
+    //save the object group after EVERY click -->
+    localStorage.setItem('savedProduct', JSON.stringify(productContainer));
     //if we finished the whole test session run a function that displays the results -- as per submission instructions we also remove the event listeners here
     if (allClickCount === amtTests) {
         //this grabs our Product objects that were constructed and pushed to an array and converts them into a string format
         localStorage.setItem('savedProducts', JSON.stringify(productContainer) );
+
 
 
         for (var i = 0; i < imgElements.length; i++) {
@@ -304,4 +357,4 @@ nameForm.addEventListener('submit', function(event){
 var savedName = localStorage.getItem('userName');
 if (savedName) {
     nameForm.textContent = `Thanks for stopping by ${savedName}.  Your participation is key to our results!`;
-}
+
